@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>الصلوات والأذكار</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-dark: #1a4a3a;
+    --green-mid: #2d6b55;
+    --green-light: #3d8b6e;
+    --green-pale: #e8f5f0;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --cream: #faf8f3;
+    --text-dark: #1a1a1a;
+    --text-mid: #3a3a3a;
+    --text-light: #6a6a6a;
+    --card-bg: #ffffff;
+    --shadow: 0 4px 20px rgba(0,0,0,0.08);
+    --shadow-hover: 0 8px 32px rgba(0,0,0,0.14);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Noto Naskh Arabic', 'Amiri', serif;
+    background: var(--cream);
+    min-height: 100vh;
+    direction: rtl;
+  }
+
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-mid) 60%, var(--green-light) 100%);
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.25);
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+  }
+
+  .header-title {
+    color: #fff;
+    font-family: 'Amiri', serif;
+    font-size: 22px;
+    font-weight: 700;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    flex: 1;
+    text-align: center;
+  }
+
+  .header-subtitle {
+    color: var(--gold-light);
+    font-size: 12px;
+    text-align: center;
+    padding-bottom: 10px;
+    letter-spacing: 0.5px;
+  }
+
+  /* Progress bar */
+  .progress-bar-wrap {
+    height: 4px;
+    background: rgba(255,255,255,0.2);
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    transition: width 0.4s ease;
+  }
+
+  /* Category tabs */
+  .tabs-wrapper {
+    background: var(--green-dark);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .tabs-wrapper::-webkit-scrollbar { display: none; }
+
+  .tabs {
+    display: flex;
+    gap: 0;
+    min-width: max-content;
+    padding: 0 8px;
+  }
+
+  .tab-btn {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.6);
+    font-family: 'Noto Naskh Arabic', serif;
+    font-size: 13px;
+    padding: 10px 16px;
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+  }
+
+  .tab-btn.active {
+    color: var(--gold-light);
+    border-bottom-color: var(--gold);
+    font-weight: 600;
+  }
+
+  /* Stats bar */
+  .stats-bar {
+    background: var(--green-pale);
+    padding: 10px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+  }
+
+  .stats-text {
+    font-size: 13px;
+    color: var(--green-mid);
+    font-weight: 600;
+  }
+
+  .reset-btn {
+    background: none;
+    border: 1px solid var(--green-mid);
+    color: var(--green-mid);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-family: 'Noto Naskh Arabic', serif;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .reset-btn:active { background: var(--green-mid); color: #fff; }
+
+  /* Main content */
+  .content {
+    padding: 16px;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  /* Zikr Card */
+  .card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: box-shadow 0.3s, transform 0.2s;
+    border: 1px solid rgba(0,0,0,0.04);
+  }
+
+  .card.completed {
+    border-color: rgba(61,139,110,0.3);
+    background: linear-gradient(135deg, #fff 0%, #f0faf6 100%);
+  }
+
+  .card-body {
+    padding: 20px 20px 16px;
+  }
+
+  .zikr-text {
+    font-family: 'Amiri', serif;
+    font-size: 21px;
+    line-height: 2;
+    color: var(--text-dark);
+    text-align: center;
+    margin-bottom: 14px;
+  }
+
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    background: rgba(0,0,0,0.02);
+    border-top: 1px solid rgba(0,0,0,0.05);
+  }
+
+  .count-info {
+    font-size: 13px;
+    color: var(--text-light);
+  }
+
+  .count-info span {
+    color: var(--green-mid);
+    font-weight: 700;
+    font-size: 15px;
+  }
+
+  /* Counter button */
+  .counter-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .counter-display {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--green-dark);
+    min-width: 28px;
+    text-align: center;
+  }
+
+  .counter-btn {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(135deg, var(--green-mid), var(--green-dark));
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(45,107,85,0.35);
+    transition: transform 0.1s, box-shadow 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .counter-btn:active {
+    transform: scale(0.9);
+    box-shadow: 0 2px 8px rgba(45,107,85,0.2);
+  }
+
+  .counter-btn.done {
+    background: linear-gradient(135deg, #4caf50, #2e7d32);
+    box-shadow: 0 4px 14px rgba(76,175,80,0.35);
+  }
+
+  .counter-btn .checkmark {
+    display: none;
+    font-size: 22px;
+  }
+
+  .counter-btn.done .plus { display: none; }
+  .counter-btn.done .checkmark { display: block; }
+
+  /* Completion badge */
+  .done-badge {
+    display: none;
+    background: linear-gradient(135deg, #4caf50, #2e7d32);
+    color: white;
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-weight: 600;
+  }
+
+  .card.completed .done-badge { display: inline-block; }
+
+  /* Ripple effect */
+  @keyframes ripple {
+    to { transform: scale(4); opacity: 0; }
+  }
+  .ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.4);
+    width: 20px; height: 20px;
+    margin-left: -10px; margin-top: -10px;
+    animation: ripple 0.5s linear;
+    pointer-events: none;
+  }
+
+  /* Pulse on complete */
+  @keyframes pulse-complete {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+    100% { transform: scale(1); }
+  }
+  .card.just-completed { animation: pulse-complete 0.4s ease; }
+
+  /* All done screen */
+  .all-done {
+    display: none;
+    text-align: center;
+    padding: 40px 20px;
+  }
+  .all-done.visible { display: block; }
+  .all-done-icon { font-size: 60px; margin-bottom: 16px; }
+  .all-done-title { font-family: 'Amiri', serif; font-size: 28px; color: var(--green-dark); margin-bottom: 8px; }
+  .all-done-sub { color: var(--text-light); font-size: 15px; }
+
+  /* Ornament divider */
+  .ornament {
+    text-align: center;
+    color: var(--gold);
+    font-size: 18px;
+    padding: 4px 0 12px;
+    opacity: 0.7;
+  }
+
+  /* Category title card */
+  .category-header {
+    text-align: center;
+    padding: 10px 0 4px;
+    margin-bottom: 4px;
+  }
+  .category-name {
+    font-family: 'Amiri', serif;
+    font-size: 20px;
+    color: var(--green-dark);
+    font-weight: 700;
+  }
+  .category-line {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 8px auto 0;
+    width: 60%;
+  }
+
+  /* Bottom safe area */
+  .bottom-space { height: 40px; }
+
+  /* Scrolled card animation */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .card { animation: fadeInUp 0.3s ease both; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div style="width:40px"></div>
+    <div class="header-title">الصلوات والأذكار</div>
+    <div style="width:40px"></div>
+  </div>
+  <div class="header-subtitle">اللهم صل وسلم وبارك على سيدنا محمد</div>
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="progressBar" style="width:0%"></div>
+  </div>
+</div>
+
+<div class="tabs-wrapper">
+  <div class="tabs" id="tabs"></div>
+</div>
+
+<div class="stats-bar">
+  <div class="stats-text" id="statsText">جاري التحميل...</div>
+  <button class="reset-btn" onclick="resetAll()">إعادة تعيين</button>
+</div>
+
+<div class="content" id="content">
+  <div class="all-done" id="allDone">
+    <div class="all-done-icon">🌙</div>
+    <div class="all-done-title">أحسنت! اكتملت جميع الأذكار</div>
+    <div class="all-done-sub">تقبّل الله منا ومنكم</div>
+  </div>
+  <div id="cards"></div>
+</div>
+
+<div class="bottom-space"></div>
+
+<script>
+const DATA = [
+  {id:"a1",cat:"أذكار مستهلة",zekr:"بِسْمِ اللهِ الرَّحْمَنِ الرَّحِيمِ",count:1},
+  {id:"a2",cat:"أذكار مستهلة",zekr:"رَبِّ أَعُوذُ بِكَ مِنْ هَمْزَاتِ الشَّيَاطِينِ وَأَعُوذُ بِكَ رَبِّ أَنْ يَحْضَرُون",count:1},
+  {id:"a3",cat:"أذكار مستهلة",zekr:"اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ . وَأَعُوذُ بِكَ مِنَ الْعَجْزِ وَالْكَسَلِ . وَأَعُوذُ بِكَ مِنَ الْجُبْنِ وَالْبُخْلِ . وَأَعُوذُ بِكَ مِنْ غَلَبَةِ الدَّيْنِ وَقَهْرِ الرِّجَالِ",count:3},
+  {id:"a4",cat:"أذكار مستهلة",zekr:"اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْفَقْرِ وَالْعَيْلَةِ وَأَعُوذُ بِكَ مِنْ كُلِّ بَلِيَّةٍ. اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْفَقْرِ إِلَّا إِلَيْكَ. وَمِنَ الذُّلِّ إِلَّا لَكَ . وَمِنَ الْخَوْفِ إِلَّا مِنْكَ",count:1},
+  {id:"a5",cat:"أذكار مستهلة",zekr:"اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْفَقْرِ إِلَّا إِلَيْكَ",count:1},
+  {id:"b1",cat:"الاستعاذات",zekr:"اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْفِتَنِ مَا ظَهَرَ مِنْهَا وَمَا بَطَنَ",count:3},
+  {id:"b2",cat:"الاستعاذات",zekr:"أَعُوذُ بِكَلِمَاتِ اللهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ",count:3},
+  {id:"b3",cat:"الاستعاذات",zekr:"اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ أَنْ أَظْلِمَ أَوْ أُظْلَمَ أَوْ أَبْغِي أَوْ يُبْغَى عَلَيَّ",count:1},
+  {id:"c1",cat:"الصلوات الدرديرية",zekr:"اللَّهُمَّ اجْعَلْنِي مِنْكَ فِي عِيَاذٍ مَنِيعٍ وَحِرْزٍ حَصِينٍ مِنْ جَمِيعِ خَلْقِكَ حَتَّى تُبَلِّغَنِي أَجَلِي مُعَافَىً مِنْ كُلِّ بَلِيَّةٍ فِي دِينِي وَدُنْيَايَ وَبَدَنِي وَأَهْلِي وَأَصْحَابِي وَأَحْبَابِي يَا رَبَّ الْعَالَمِيَن",count:1},
+  {id:"c2",cat:"الصلوات الدرديرية",zekr:"رَبَّنَا لَا تُزِغْ قُلُوبَنَا بَعْدَ إِذْ هَدَيْتَنَا وَهَبْ لَنَا مِنْ لَدُنْكَ رَحْمَةً إِنَّكَ أَنْتَ الوَهَّابُ",count:1},
+  {id:"c3",cat:"الصلوات الدرديرية",zekr:"اللَّهُمَّ اجْعَلْ صَلَوَاتَكَ أَبَدَاً وَأَنْمِيَ بَرَكَاتِكَ سَرْمَدَاً وَأَزْكي تَحِيَّاتِكَ فَضْلَاً وَعَدَداً عَلَى أَشْرَفِ الْخَلَائِقِ الْإِنْسَانِيَّةِ سَيِّدِنَا مُحَمَّدٍ بِنْ عَبْدِ اللهِ",count:1},
+  {id:"c4",cat:"الصلوات الدرديرية",zekr:"اللَّهُمَّ صَلِّ عَلَى مَنْ مِنْهُ انْشَقَّتِ الْأَسْرَارُ وَانْفَلَقَتِ الْأَنْوَارُ ، وَفِيهِ ارْتَقَتْ الْحَقَائِقُ وَتَنَزَّلَتْ عُلُومُ آدَمَ",count:1},
+  {id:"c5",cat:"الصلوات الدرديرية",zekr:"اللَّهُمَّ صَلِّ عَلَى الذَّاتِ الْمُحَمَّدِيَّةِ اللَّطِيفَةِ الْأَحَدِيَّةِ شَمْسِ سَمَاءِ الْأَسْرَارِ، وَمَظْهَرِ الْأَنْوَارِ",count:1},
+  {id:"c6",cat:"الصلوات الدرديرية",zekr:"اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى سَيِّدِنَا مُحَمَّدٍ وَآدَمَ وَنُوحِ وَإِبْرَاهِيمَ وَمُوسَى وَعِيسَى وَمَا بَيْنَهُمْ مِنَ النَّبِيِّينَ وَالْمُرْسَلِينَ",count:1},
+  {id:"c7",cat:"الصلوات الدرديرية",zekr:"اللَّهُمَّ صَلِّ عَلَى سَيِّدِنَا مُحَمَّدٍ بَحْرِ أَنْوَارِكَ وَمَعْدَنِ أَسْرَارِكَ وَلِسَانِ حُجَّتِكَ وَعَرُوسِ مَمْلَكَتِكَ",count:1},
+  {id:"c8",cat:"الصلوات الدرديرية",zekr:"اللَّهُمَّ صَلِّ عَلَى سَيِّدِنَا مُحَمَّدٍ عَدَدَ مَا فِي عِلْمِ اللهِ صَلَاةً دَائِمَةً بِدَوَامِ مُلْكِ اللهِ",count:3},
+  {id:"c9",cat:"الصلوات الدرديرية",zekr:"اللَّهُمَّ صَلِّ عَلَى سَيِّدِنَا مُحَمَّدٍ صَلَاةً تُنَجِّينَا بِهَا مِنْ جَمِيعِ الْأَهْوَالِ وَالْآفَاتِ وَتَقْضِي لَنَا بِهَا جَمِيعَ الْحَاجَاتِ",count:3},
+  {id:"c10",cat:"الصلوات الدرديرية",zekr:"اللَّهُمَّ صَلِّ عَلَى سَيِّدِنَا مُحَمَّدٍ صَلَاةَ الرِّضَى وَارْضَ عَنْ أَصْحَابِهِ رِضَاءَ الرِّضَى",count:3},
+  {id:"c11",cat:"الصلوات الدرديرية",zekr:"اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى سَيِّدِنَا مُحَمَّدٍ الرَّؤُوفُ الرَّحِيمُ ذِي الْخُلُقِ الْعَظِيمِ",count:3},
+  {id:"c12",cat:"الصلوات الدرديرية",zekr:"اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى سَيِّدِنَا مُحَمَّدٍ الْفَاتِحِ لِمَا أُغْلِقَ وَالْخَاتِمِ لِمَا سَبَقَ",count:3},
+  {id:"c13",cat:"الصلوات الدرديرية",zekr:"اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى سَيِّدِنَا مُحَمَّدٍ كَرِيمِ الْآبَاءِ وَالْأُمَّهَاتِ",count:3},
+  {id:"c14",cat:"الصلوات الدرديرية",zekr:"اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى سَيِّدِنَا مُحَمَّدٍ وَعَلَى آلِهِ عَدَدَ كَمَالِ اللهِ وَكَمَا يَلِيقُ بِكَمَالِهِ",count:3},
+  {id:"d1",cat:"الصلوات الدرديرية",zekr:"اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى سَيِّدِنَا مُحَمَّدٍ وَعَلَى آلِهِ عَدَدَ إِنْعَامِ اللهِ وَإِفْضَالِهِ",count:3},
+  {id:"d2",cat:"الصلوات الدرديرية",zekr:"اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى سَيِّدِنَا مُحَمَّدٍ وَعَلَى آلِهِ كَمَا لَا نِهَايَةَ لِكَمَالِكَ وَعَدَّ كَمَالِ",count:3},
+  {id:"d3",cat:"الصلوات الدرديرية",zekr:"اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى سَيِّدِنَا مُحَمَّدٍ وَعَلَى آلِهِ صَلَاةً تَلِيقُ بِجَمَالِهِ وَجَلَالِهِ وَكَمَالِهِ",count:3},
+  {id:"d4",cat:"الصلوات الدرديرية",zekr:"اللَّهُمَّ صَلِّ عَلَى سَيِّدِنَا مُحَمَّدٍ طِبِّ الْقُلُوبِ وَدَوَائِهَا ، وَعَافِيَةِ الْأَبْدَانِ وَشَفَائِهَا ، وَنُورِ الْأَبْصَارِ وَضِيَائِهَا",count:3},
+  {id:"d5",cat:"الصلوات الدرديرية",zekr:"اللَّهُمَّ صَلِّ عَلَى سَيِّدِنَا مُحَمَّدٍ النَّبِيِّ الْأُمِّيِّ الْحَبِيبِ الْعَالِي الْقَدْرِ الْعَظِيمِ الْجَاهِ",count:3},
+  {id:"d6",cat:"الصلوات الدرديرية",zekr:"اللَّهُمَّ صَلِّ عَلَى سَيِّدِنَا مُحَمَّدٍ النَّبِيِّ الْأُمِّيِّ وَعَلَى آلِهِ وَصَحْبِهِ وَسَلِّمْ عَدَدَ مَا فِيِ السَّمَاوَاتِ وَمَا فِي الْأَرْضِ",count:3},
+  {id:"d7",cat:"الصلوات الدرديرية",zekr:"اللَّهُمَّ صَلِّ عَلَى سَيِّدِنَا مُحَمَّدٍ صَلَاةَ أَهْلِ السَّمَاوَاتِ وَالْأَرْضِينَ عَلَيْهِ",count:3},
+  {id:"d8",cat:"الصلوات الدرديرية",zekr:"اللَّهُمَّ صَلِّ عَلَى سَيِّدِنَا مُحَمَّدٍ وَعَلَى آلِ سَيِّدِنَا مُحَمَّدٍ كَمَا صَلَّيْتَ وَبَارَكْتَ عَلَى سَيِّدِنَا إِبْرَاهِيمَ",count:1},
+  {id:"d9",cat:"الصلوات الدرديرية",zekr:"اللَّهُمَّ صَلِّ عَلَى سَيِّدِنَا مُحَمَّدٍ النَّبِيِّ الْأُمِّيِّ الطَّاهِرِ الْمُطَهِّرِ وَعَلَى آلِهِ وَصَحْبِهِ",count:1},
+  {id:"d10",cat:"الصلوات الدرديرية",zekr:"اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى سَيِّدِنَا مُحَمَّدٍ وَأَعْطِهِ الْوَسِيلَةَ وَالْفَضِيلَةَ",count:1},
+  {id:"d11",cat:"الصلوات الدرديرية",zekr:"اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى سَيِّدِنَا مُحَمَّدٍ الصَّادِقِ الْأَمِين ، الَّذِي جَاءَ بِالْحَقِّ الْمُبِينِ",count:1},
+  {id:"d12",cat:"حرف الهمزة",zekr:"اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى سَيِّدِنَا مُحَمَّدٍ وَعَلَى سَائِرِ أَنْبِيَائِكَ وَمَلَائِكَتِكَ وَأَوْلِيَائِكَ",count:1},
+  {id:"e1",cat:"حرف الباء",zekr:"اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى سَيِّدِنَا مُحَمَّدٍ عَدَدَ مَا فِي الْأَرْضِ وَالسَّمَاءِ",count:1},
+  {id:"e2",cat:"حرف التاء",zekr:"اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى سَيِّدِنَا مُحَمَّدٍ النَّاطِقِ بِالصِّدْقِ وَالصَّوَابِ",count:1},
+  {id:"e3",cat:"حرف الثاء",zekr:"اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى سَيِّدِنَا مُحَمَّدٍ الَّذِي جَاءَ بِالْآيَاتِ البَيِّنَاتِ",count:1},
+  {id:"e4",cat:"حرف الجيم",zekr:"اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى سَيِّدِنَا مُحَمَّدٍ عَدَدَ كُلِّ قَدِيمٍ وَحَادِثٍ",count:1},
+  {id:"e5",cat:"حرف الحاء",zekr:"اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى سَيِّدِنَا مُحَمَّدٍ الْمَخْصُوصِ بِالْإِسْرَاءِ وَالْمِعْرَاجِ",count:1},
+  {id:"e6",cat:"حرف الخاء",zekr:"اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى سَيِّدِنَا مُحَمَّدٍ زَيْنِ الْمِلَاحِ",count:1},
+  {id:"e7",cat:"حرف الدال",zekr:"اللَّهُمَّ صَلِّ وَسَلَّمْ وَبَارِكْ عَلَى سَيِّدِنَا مُحَمَّدٍ الَّذِي بِسِرِّهِ اسْتَقَامَتْ الْبَرَازِخُ",count:1},
+  {id:"e8",cat:"حرف الذال",zekr:"اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى سَيِّدِنَا مُحَمَّدٍ أَشْرَفِ دَاعٍ إِلَى اللهِ وَهَادٍ",count:1},
+  {id:"e9",cat:"حرف الراء",zekr:"اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى سَيِّدِنَا مُحَمَّدٍ أُسْتَاذِ كُلِّ أُسْتَاذٍ",count:1},
+  {id:"e10",cat:"حرف الزاي",zekr:"اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى سَيِّدِنَا مُحَمَّدٍ مَعْدِنِ الْأَسْرَارِ وَمُظْهِرِ الْأَنْوَارِ",count:1},
+  {id:"e11",cat:"حرف السين",zekr:"اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى سَيِّدِنَا مُحَمَّدٍ الَّذِي تَشَرَّفَتْ بِهِ أَرْضُ الْحِجَازِ",count:1},
+  {id:"e12",cat:"حرف الشين",zekr:"اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى سَيِّدِنَا مُحَمَّدٍ طَيِّبِ الْأَنْفَاسِ",count:1},
+  {id:"e13",cat:"حرف الصاد",zekr:"اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى سَيِّدِنَا مُحَمَّدٍ الَّذِي لَمْ يَرْضَ بِلِينِ الْفِرَاشِ",count:1},
+  {id:"e14",cat:"حرف الضاد",zekr:"اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى سَيِّدِنَا مُحَمَّدٍ وَعَلَى آلِ سَيِّدِنَا مُحَمَّدٍ الْآمِرِ بِالتَّقْوَى",count:1},
+  {id:"e15",cat:"حرف الطاء",zekr:"اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى سَيِّدِنَا مُحَمَّدٍ وَعَلَى آلِ سَيِّدِنَا مُحَمَّدٍ الَّذِي أَزْهَرَتْ بِبَرَكَتِه الرِّيَاضُ",count:1},
+  {id:"e16",cat:"حرف الظاء",zekr:"اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى سَيِّدِنَا مُحَمَّدٍ الْهَادِي إِلَى سَوَاءِ الصِّرَاطِ",count:1},
+  {id:"e17",cat:"حرف العين",zekr:"اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى سَيِّدِنَا مُحَمَّدٍ عَدَدَ كُلِّ مَحْفُوظٍ وَحَافِظٍ",count:1},
+  {id:"e18",cat:"حرف الغين",zekr:"اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى سَيِّدِنَا مُحَمَّدٍ النُّورِ السَّاطِعِ",count:1},
+  {id:"e19",cat:"حرف الفاء",zekr:"اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى سَيِّدِنَا مُحَمَّدٍ صَاحِبِ الرِّسَالَةِ وَالْبَلَاغِ",count:1},
+  {id:"e20",cat:"حرف القاف",zekr:"اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى سَيِّدِنَا مُحَمَّدٍ الْآمِرِ بِالْعَدْلِ وَالْإِنْصَافِ",count:1},
+  {id:"e21",cat:"حرف الكاف",zekr:"اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى سَيِّدِنَا مُحَمَّدٍ خَيْرِ خَلْقِ اللهِ عَلَى الْإِطْلَاقِ",count:1},
+  {id:"e22",cat:"حرف اللام",zekr:"اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى سَيِّدِنَا مُحَمَّدٍ مَا تَحَرَّكَتِ الْأَفْلَاكُ",count:1},
+  {id:"e23",cat:"حرف الميم",zekr:"اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى سَيِّدِنَا مُحَمَّدٍ بَطَلَ الْأَبْطَالِ وَمَعْدِنِ الْجُودِ وَالنَّوَالِ",count:1},
+  {id:"e24",cat:"حرف النون",zekr:"اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى سَيِّدِنَا مُحَمَّدٍ السَّيِّدِ الْهُمَامِ",count:1},
+  {id:"e25",cat:"حرف الهاء",zekr:"اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى سَيِّدِنَا مُحَمَّدٍ سَيِّدِ الْأَكْوَانِ",count:1},
+  {id:"e26",cat:"حرف الواو",zekr:"اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى سَيِّدِنَا مُحَمَّدٍ الْعَالِي الْقَدْرِ الْعَظِيمِ الْجَاهِ",count:1},
+  {id:"e27",cat:"حرف اللام ألف",zekr:"اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى سَيِّدِنَا مُحَمَّدٍ الَّذِي مَا نَطَقَ عَنِ الْهَوَى",count:1},
+  {id:"e28",cat:"حرف الياء",zekr:"اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى سَيِّدِنَا مُحَمَّدٍ ذِي الْمَقَامِ الْأَعْلَى وَالسِّرِّ الْأَجْلَى",count:1},
+  {id:"e29",cat:"الصلوات الأبجدية",zekr:"اللَّهُمَّ صَلِّ عَلَى سَيِّدِنَا مُحَمَّدٍ وَعَلَى كُلِّ نَبِيٍّ وَمَلَكٍ وَوَلِيٍّ وَعَالِمٍ وَتَقِيٍّ",count:1},
+  {id:"e30",cat:"الصلوات الأبجدية",zekr:"اللَّهُمَّ اغْفِرْ لَنَا مَا قَدَّمْنَا وَمَا أَخَّرْنَا وَمَا أَسْرَرْنَا وَمَا أَعْلَنَّا. اللَّهُمَّ أَرِنَا الْحَقَّ حَقَّاً فَنَتَّبِعَهُ",count:1}
+];
+
+// State
+let counters = {};
+let currentCat = null;
+
+// Load state
+function loadState() {
+  const saved = localStorage.getItem('azkar_state_v1');
+  if (saved) counters = JSON.parse(saved);
+}
+
+function saveState() {
+  localStorage.setItem('azkar_state_v1', JSON.stringify(counters));
+}
+
+// Get unique categories
+const categories = [...new Set(DATA.map(d => d.cat))];
+
+// Build tabs
+function buildTabs() {
+  const tabsEl = document.getElementById('tabs');
+  const allTab = document.createElement('button');
+  allTab.className = 'tab-btn active';
+  allTab.textContent = 'الكل';
+  allTab.onclick = () => selectCat(null, allTab);
+  tabsEl.appendChild(allTab);
+
+  categories.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'tab-btn';
+    btn.textContent = cat;
+    btn.onclick = () => selectCat(cat, btn);
+    tabsEl.appendChild(btn);
+  });
+}
+
+function selectCat(cat, btn) {
+  currentCat = cat;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  btn.scrollIntoView({behavior:'smooth', block:'nearest', inline:'center'});
+  renderCards();
+}
+
+// Render cards
+function renderCards() {
+  const container = document.getElementById('cards');
+  container.innerHTML = '';
+
+  const filtered = currentCat ? DATA.filter(d => d.cat === currentCat) : DATA;
+  let lastCat = null;
+
+  filtered.forEach((item, idx) => {
+    if (item.cat !== lastCat) {
+      if (!currentCat) {
+        const hdr = document.createElement('div');
+        hdr.className = 'category-header';
+        hdr.innerHTML = `<div class="category-name">✦ ${item.cat} ✦</div><div class="category-line"></div>`;
+        container.appendChild(hdr);
+      }
+      lastCat = item.cat;
+    }
+
+    const cur = counters[item.id] || 0;
+    const done = cur >= item.count;
+
+    const card = document.createElement('div');
+    card.className = 'card' + (done ? ' completed' : '');
+    card.id = 'card_' + item.id;
+    card.style.animationDelay = (idx * 0.04) + 's';
+
+    const times = item.count === 1 ? 'مرة واحدة' : item.count === 3 ? 'ثلاث مرات' : item.count + ' مرات';
+
+    card.innerHTML = `
+      <div class="card-body">
+        <div class="zikr-text">${item.zekr}</div>
+      </div>
+      <div class="card-footer">
+        <div class="count-info">${times} &nbsp;|&nbsp; <span>${cur}/${item.count}</span></div>
+        <div class="counter-area">
+          <div class="done-badge">✓ تم</div>
+          <div class="counter-display" id="disp_${item.id}">${cur}</div>
+          <button class="counter-btn ${done ? 'done' : ''}" id="btn_${item.id}" onclick="tap('${item.id}', this)">
+            <span class="plus">+</span>
+            <span class="checkmark">✓</span>
+          </button>
+        </div>
+      </div>`;
+
+    container.appendChild(card);
+  });
+
+  updateStats();
+}
+
+function tap(id, btn) {
+  const item = DATA.find(d => d.id === id);
+  if (!item) return;
+
+  const cur = counters[id] || 0;
+  if (cur >= item.count) return;
+
+  // Ripple
+  const r = document.createElement('div');
+  r.className = 'ripple';
+  btn.appendChild(r);
+  setTimeout(() => r.remove(), 500);
+
+  counters[id] = cur + 1;
+  saveState();
+
+  const newCur = counters[id];
+  const done = newCur >= item.count;
+
+  // Update display
+  const disp = document.getElementById('disp_' + id);
+  if (disp) disp.textContent = newCur;
+
+  // Update footer count
+  const times = item.count === 1 ? 'مرة واحدة' : item.count === 3 ? 'ثلاث مرات' : item.count + ' مرات';
+  const card = document.getElementById('card_' + id);
+  const countInfo = card.querySelector('.count-info');
+  countInfo.innerHTML = `${times} &nbsp;|&nbsp; <span>${newCur}/${item.count}</span>`;
+
+  if (done) {
+    btn.classList.add('done');
+    card.classList.add('completed');
+    card.classList.add('just-completed');
+    setTimeout(() => card.classList.remove('just-completed'), 400);
+    // Haptic if available
+    if (navigator.vibrate) navigator.vibrate(30);
+  }
+
+  updateStats();
+}
+
+function updateStats() {
+  const total = DATA.length;
+  const done = DATA.filter(d => (counters[d.id] || 0) >= d.count).length;
+  const pct = Math.round((done / total) * 100);
+
+  document.getElementById('statsText').textContent = `${done} من ${total} ذكر (${pct}%)`;
+  document.getElementById('progressBar').style.width = pct + '%';
+
+  if (done === total) {
+    document.getElementById('allDone').classList.add('visible');
+  } else {
+    document.getElementById('allDone').classList.remove('visible');
+  }
+}
+
+function resetAll() {
+  if (!confirm('هل تريد إعادة تعيين جميع الأذكار؟')) return;
+  counters = {};
+  saveState();
+  renderCards();
+}
+
+// Init
+loadState();
+buildTabs();
+renderCards();
+</script>
+</body>
+</html>
